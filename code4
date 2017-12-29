@@ -1,0 +1,48 @@
+setwd('C:/Users/user/Desktop/Magazine')
+data<-read.csv("C:/Users/user/Desktop/Magazine/004new.csv", header=T, sep=",")
+type<-read.csv("C:/Users/user/Desktop/Magazine/2018理想品牌品項.csv", header=T, sep=",", stringsAsFactors = F)
+
+#read.table("C:/Users/user/Desktop/Magazine/001.csv", header=T, sep=",")
+
+
+
+gg_list = list()
+
+for(i in 2:98){
+  
+ 
+    w = table(data[i])
+    gg=data.frame(w)
+    gg$percent = round(w/sum(w), 4)
+    
+    
+    
+    #rank the firm
+    gg = gg[order(gg$percent, decreasing = T), ]
+    gg$廠商排名  = 1:length(gg$percent)
+    gg$題項=names(data[i])
+    
+    # name the data frame 
+    colnames(gg)[1] = '廠商名稱'
+    colnames(gg)[2] = '廠商次數'
+    colnames(gg)[3] = '廠商百分比'
+    
+    
+    # name the type
+    type_num=grep(names(data[i]), type$對應題目 ) 
+    gg$調查品項 = type[type_num, ]$調查品項
+    
+    gg_list[i] = list(gg)
+    
+  }
+  
+  
+}
+
+hh=do.call(rbind, gg_list)
+
+
+# save csv
+write.csv(hh, 'rank004new.csv')
+hh[900,]
+
